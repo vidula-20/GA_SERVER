@@ -14,7 +14,7 @@ GA_CREDENTIALS = {
     "private_key": "",
     "token_uri": ""
 }
-PROPERTY_ID = "312879543"
+PROPERTY_ID = ""
 analytics = None  # Will be initialized in main
 valid_dimension_names = set()  # To be fetched dynamically
 
