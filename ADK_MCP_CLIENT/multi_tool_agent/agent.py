@@ -1,19 +1,15 @@
 from contextlib import AsyncExitStack
 from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, SseServerParams
 from google.adk.agents.llm_agent import LlmAgent, Agent
-from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StdioServerParameters
-
 
 async def create_agent():
     common_exit_stack = AsyncExitStack()
     tools, _ = await MCPToolset.from_server(
         connection_params=SseServerParams(
             url="http://localhost:8080/sse",
-            # Optionally, add headers={"Authorization": "Bearer ..."} if needed
         ),
         async_exit_stack=common_exit_stack
     )
-
 
     agent = LlmAgent(
         model='gemini-2.5-flash-preview-04-17',
@@ -39,15 +35,14 @@ For each question:
 - If the question is about comparisons, trends, or rankings, use time-based or category-based breakdowns (e.g., add "date" or "pagePath" as a dimension).
 - If the user’s request is unclear, ask clarifying questions.
 - If the user asks for data outside the scope of these tools, explain what analytics you can provide and suggest the closest available report.
-
-
+- When a user specifies a filter (e.g., "only iOS users", "country is India"), use the 'filters' argument in the tool call, mapping user language to the correct dimension and value.
+    - For example, for "iOS users", set filters={"operatingSystem": "iOS"}.
+    - For "device category is mobile", set filters={"deviceCategory": "mobile"}.
 
 Always provide clear, concise, and actionable answers.
 """,
         tools=tools,
     )
     return agent, common_exit_stack
-    
+
 root_agent = create_agent()
-    
-    # Now you can use `agent` as needed
